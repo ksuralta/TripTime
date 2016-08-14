@@ -2,7 +2,7 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy import Column, Integer, String
 from models.base import Base
-from models import stops, stop_times, trips
+from models import stops, stop_times, trips, calendar, calendar_dates, routes
 
 env_host = os.environ['MYSQL_HOST']
 env_user = os.environ['MYSQL_USER']

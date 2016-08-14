@@ -13,23 +13,25 @@ directory = sys.argv[1]
 transport_type = sys.argv[2]
 
 def loadFiles(cnx):
-    TABLES = ['stops', 'stop_times', 'trips']
+    TABLES = ['calendar', 'calendar_dates', 'routes', 'trips', 'stops', 'stop_times']
     for table in TABLES:
         print 'processing %s' % table
         fname = '%s/%s.txt' % (directory, table)
-        f = open(fname, 'r')
-        reader = csv.reader(f)
-        columnsRaw = reader.next()
-        columns = ['shape_dist_traveled' if x=='shape_dist_travelled' else x for x in columnsRaw]
-        f.close()
-        load_sql = "LOAD DATA INFILE '%s' REPLACE INTO TABLE %s FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\\n' IGNORE 1 LINES (%s)" % (os.path.abspath(fname), table, ','.join(columns))
-        print load_sql
-        cur = cnx.cursor()
-        cur.execute(load_sql)
-        t = cur.fetchwarnings()
-        print t
-        cnx.commit()
-        cur.close()
+        try:
+            f = open(fname, 'r')
+            reader = csv.reader(f)
+            columnsRaw = reader.next()
+            columns = ['shape_dist_traveled' if x=='shape_dist_travelled' else x for x in columnsRaw]
+            f.close()
+            load_sql = "LOAD DATA INFILE '%s' REPLACE INTO TABLE %s FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\\n' IGNORE 1 LINES (%s)" % (os.path.abspath(fname), table, ','.join(columns))
+            cur = cnx.cursor()
+            cur.execute(load_sql)
+            t = cur.fetchwarnings()
+            print t
+            cnx.commit()
+            cur.close()
+        except IOError:
+            print "Error opening file '%s'" % (fname)
 
 env_host = os.environ['MYSQL_HOST']
 env_user = os.environ['MYSQL_USER']
