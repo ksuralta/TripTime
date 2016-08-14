@@ -5,9 +5,9 @@ from base import Base
 
 class Trip(Base):
     __tablename__ = 'trips'
-    route_id = Column(String(80), primary_key=True)
+    route_id = Column(String(80))
     service_id = Column(String(80))
-    trip_id = Column(String(80))
+    trip_id = Column(String(80), primary_key=True)
     trip_headsign = Column(String(80))
     trip_short_name = Column(String(80))
     direction_id = Column(String(80))
